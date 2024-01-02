@@ -1,0 +1,79 @@
+default_install_hook_types: [pre-commit, commit-msg]
+
+repos:
+  # sorts import lines
+  - repo: 'https://github.com/pycqa/isort'
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ['--profile', 'black']
+
+  # check code formatting
+  - repo: 'https://github.com/psf/black'
+    rev: 23.11.0
+    hooks:
+      - id: black
+        language_version: python3.12
+
+  # checks line length and complexity
+  - repo: 'https://github.com/pycqa/flake8'
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        args:
+          - '--max-line-length=88'
+          - '--max-complexity=10'
+          - '--ignore=E203,W503'
+          - '--exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,*/migrations/*'
+
+  - repo: 'https://github.com/pre-commit/pre-commit-hooks'
+    rev: v4.5.0
+    hooks:
+      - id: no-commit-to-branch
+        args: [-b, main]
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: debug-statements
+      - id: trailing-whitespace
+
+  # find common security issues in Python code
+  - repo: 'https://github.com/pycqa/bandit'
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args:
+          - '-ii'
+          - '-ll'
+
+  # automatically upgrade syntax for newer versions of the language
+  - repo: 'https://github.com/asottile/pyupgrade'
+    rev: v3.15.0
+    hooks:
+      - id: pyupgrade
+        args:
+          - '--keep-runtime-typing'
+
+  # automatically correct docstrings
+  - repo: 'https://github.com/myint/docformatter'
+    rev: v1.7.5
+    hooks:
+      - id: docformatter
+        args:
+          - '--in-place'
+          - '--wrap-summaries'
+          - '80'
+          - '--wrap-descriptions'
+          - '80'
+
+  # Check Python dependencies against safety-db.
+  - repo: 'https://github.com/Lucas-C/pre-commit-hooks-safety'
+    rev: v1.3.2
+    hooks:
+      - id: python-safety-dependencies-check
+        args: [--ignore=42194]
+
+  # Check commit messages
+  - repo: 'https://github.com/jorisroovers/gitlint'
+    rev: v0.19.1
+    hooks:
+     - id: gitlint

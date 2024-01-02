@@ -1,0 +1,35 @@
+services:
+  app:
+    build: .
+    container_name: taskmanager-app
+    command: ["local_entrypoint.sh"]
+    depends_on:
+      - db
+    env_file: .env
+    environment:
+      WDB_SOCKET_SERVER: wdb
+      WDB_NO_BROWSER_AUTO_OPEN: 1
+      PYTHONBREAKPOINT: wdb.set_trace
+    ports:
+      - '8000:8000'
+    volumes:
+      - '.:/app'
+
+  db:
+    container_name: taskmanager-db
+    env_file: .env
+    image: 'postgres:16.1-alpine'
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  wdb:
+    image: 'kozea/wdb:3.3.0'
+    container_name: wdb
+    ports:
+      - '1984:1984'
+
+
+volumes:
+  db-data:
