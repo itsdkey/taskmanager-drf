@@ -1,0 +1,36 @@
+name: Run tests on pull request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run_tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Create env file
+      id: create-env-file
+      run: |
+        echo "${{ secrets.ENV_FILE }}" > .env
+
+    - name: Build image
+      id: build-image
+      run: |
+        docker compose build --compress --force-rm app
+
+    - name: Run migrations
+      id: run-migrations
+      run: |
+        docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py migrate"
+
+    - name: Run tests
+      id: run-tests
+      run: |
+        docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"
