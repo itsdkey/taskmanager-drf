@@ -3,6 +3,7 @@ from typing import Type
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -31,6 +32,30 @@ from tasks.serializers import TaskSerializer, TaskStateSerializer
     destroy=extend_schema(
         description="Delete a specific task related to the logged-in User.",
     ),
+    mark_to_do=extend_schema(
+        description=(
+            "Update a specific task related to the logged-in User "
+            "to be in TO-DO state."
+        ),
+        request=None,
+        responses={status.HTTP_200_OK: TaskSerializer},
+    ),
+    mark_in_progress=extend_schema(
+        description=(
+            "Update a specific task related to the logged-in User "
+            "to be in IN-PROGRESS state."
+        ),
+        request=None,
+        responses={status.HTTP_200_OK: TaskSerializer},
+    ),
+    mark_done=extend_schema(
+        description=(
+            "Update a specific task related to the logged-in User "
+            "to be in DONE state."
+        ),
+        request=None,
+        responses={status.HTTP_200_OK: TaskSerializer},
+    ),
 )
 class TaskViewSet(ModelViewSet):
     """ViewSet to handle actions related to Task model."""
@@ -54,15 +79,15 @@ class TaskViewSet(ModelViewSet):
         }
         return serializers.get(self.action, TaskSerializer)
 
-    @action(methods=["post"], detail=True)
+    @action(methods=["post"], detail=True, url_path="mark-to-do")
     def mark_to_do(self, request: Request, pk: str = None) -> Response:
         return self._update_task_state(TaskState.TO_DO)
 
-    @action(methods=["post"], detail=True)
+    @action(methods=["post"], detail=True, url_path="mark-in-progress")
     def mark_in_progress(self, request: Request, pk: str = None) -> Response:
         return self._update_task_state(TaskState.IN_PROGRESS)
 
-    @action(methods=["post"], detail=True)
+    @action(methods=["post"], detail=True, url_path="mark-done")
     def mark_done(self, request: Request, pk: str = None) -> Response:
         return self._update_task_state(TaskState.DONE)
 

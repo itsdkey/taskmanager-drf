@@ -157,7 +157,6 @@ class TaskViewSetTestCase(APITestCase):
             "due_date": (now() - timedelta(days=1)).date(),
             "title": "Task title",
             "description": "Task description",
-            "state": TaskState.TO_DO,
         }
         expected_response = {
             "due_date": ["This date cannot be in the past."],
