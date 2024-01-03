@@ -37,6 +37,7 @@ best practices I used the following concepts:
 - [django-filter](https://django-filter.readthedocs.io/en/stable/) to have filters on our endpoints
 - [django-environ](https://django-environ.readthedocs.io/en/latest/) to configure our Dj app with env vars
 - [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/) to provide OpenAPI/Swagger docs
+- [GitHub actions](https://github.com/features/actions) for CI/CD support
 
 ## What patterns I followed
 To keep following the best practices and to have my code more structured I decided to follow the patterns below:
